@@ -17,4 +17,5 @@ extern "C" {
         -> c_int;
     pub fn OBJ_sn2nid(sn: *const libc::c_char) -> libc::c_int;
     pub fn OBJ_txt2obj(s: *const libc::c_char, no_name: libc::c_int) -> *mut ASN1_OBJECT;
+    pub fn OBJ_nid2obj(n: libc::c_int) -> *mut ASN1_OBJECT;
 }

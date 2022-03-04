@@ -20,6 +20,8 @@ pub enum X509_EXTENSION {}
 
 stack!(stack_st_X509_EXTENSION);
 
+pub enum X509_ATTRIBUTE {}
+
 stack!(stack_st_X509_ATTRIBUTE);
 
 cfg_if! {

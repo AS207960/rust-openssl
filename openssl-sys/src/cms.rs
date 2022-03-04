@@ -1,7 +1,23 @@
+use EVP_PKEY;
+use ::{ASN1_OBJECT, ASN1_OCTET_STRING};
 use libc::*;
 use *;
 
 pub enum CMS_ContentInfo {}
+pub enum CMS_SignerIdentifier {}
+
+#[repr(C)]
+pub struct CMS_SignerInfo {
+    pub version: c_long,
+    pub sid: *mut CMS_SignerIdentifier,
+    pub digest_algorithm: *mut X509_ALGOR,
+    pub signed_attributes: *mut stack_st_X509_ATTRIBUTE,
+    pub signature_algorithm: *mut X509_ALGOR,
+    pub signature: *mut ASN1_OCTET_STRING,
+    pub unsigned_attributes: *mut stack_st_X509_ATTRIBUTE,
+    pub signer: *mut X509,
+    pub pkey: *mut EVP_PKEY,
+}
 
 extern "C" {
     #[cfg(ossl101)]
@@ -61,6 +77,8 @@ pub const CMS_DEBUG_DECRYPT: c_uint = 0x20000;
 pub const CMS_KEY_PARAM: c_uint = 0x40000;
 #[cfg(ossl110)]
 pub const CMS_ASCIICRLF: c_uint = 0x80000;
+#[cfg(ossl111)]
+pub const CMS_CADES: c_uint = 0x100000;
 
 extern "C" {
     #[cfg(ossl101)]
@@ -92,4 +110,82 @@ extern "C" {
         out: *mut ::BIO,
         flags: c_uint,
     ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_add1_signer(
+        cms: *mut ::CMS_ContentInfo,
+        cert: *mut ::X509,
+        pkey: *mut ::EVP_PKEY,
+        md: *const EVP_MD,
+        flags: c_uint,
+    ) -> *mut ::CMS_SignerInfo;
+
+    #[cfg(ossl101)]
+    pub fn CMS_final(
+        cms: *mut ::CMS_ContentInfo,
+        data: *mut ::BIO,
+        dcont: *mut ::BIO,
+        flags: c_uint,
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_signed_add1_attr_by_NID(
+        si: *mut CMS_SignerInfo,
+		nid: c_int,
+		attr_type: c_int,
+		bytes: *const c_uchar,
+		len: c_int,
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_unsigned_add1_attr_by_NID(
+        si: *mut CMS_SignerInfo,
+		nid: c_int,
+		attr_type: c_int,
+		bytes: *const c_uchar,
+		len: c_int,
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_signed_get_attr_count(
+        si: *const CMS_SignerInfo,
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_signed_get_attr_by_NID(
+        si: *const CMS_SignerInfo,
+        nid: c_int,
+        lastpos: c_int
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_signed_get_attr_by_OBJ(
+        si: *const CMS_SignerInfo,
+        obj: *mut ASN1_OBJECT,
+        lastpos: c_int
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_signed_delete_attr(
+        si: *mut CMS_SignerInfo,
+		loc: c_int
+	) -> *mut X509_ATTRIBUTE;
+
+    #[cfg(ossl101)]
+    pub fn CMS_unsigned_get_attr_by_NID(
+        si: *const CMS_SignerInfo,
+        nid: c_int,
+        lastpos: c_int
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_unsigned_delete_attr(
+        si: *mut CMS_SignerInfo,
+		loc: c_int
+	) -> *mut X509_ATTRIBUTE;
+
+    #[cfg(ossl101)]
+    pub fn CMS_SignerInfo_sign(
+        si: *mut CMS_SignerInfo,
+	) -> c_int;
 }
