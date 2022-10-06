@@ -112,6 +112,12 @@ extern "C" {
     ) -> c_int;
 
     #[cfg(ossl101)]
+    pub fn CMS_add0_cert(
+        cms: *mut ::CMS_ContentInfo,
+        cert: *mut ::X509,
+    ) -> c_int;
+
+    #[cfg(ossl101)]
     pub fn CMS_add1_signer(
         cms: *mut ::CMS_ContentInfo,
         cert: *mut ::X509,
