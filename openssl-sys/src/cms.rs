@@ -135,9 +135,27 @@ extern "C" {
     ) -> c_int;
 
     #[cfg(ossl101)]
+    pub fn CMS_signed_add1_attr_by_OBJ(
+        si: *mut CMS_SignerInfo,
+        obj: *const ASN1_OBJECT,
+		attr_type: c_int,
+		bytes: *const c_uchar,
+		len: c_int,
+    ) -> c_int;
+
+    #[cfg(ossl101)]
     pub fn CMS_signed_add1_attr_by_NID(
         si: *mut CMS_SignerInfo,
 		nid: c_int,
+		attr_type: c_int,
+		bytes: *const c_uchar,
+		len: c_int,
+    ) -> c_int;
+
+    #[cfg(ossl101)]
+    pub fn CMS_unsigned_add1_attr_by_OBJ(
+        si: *mut CMS_SignerInfo,
+        obj: *const ASN1_OBJECT,
 		attr_type: c_int,
 		bytes: *const c_uchar,
 		len: c_int,
